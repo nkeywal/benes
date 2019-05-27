@@ -16,7 +16,7 @@ public class TikzPathsFromRoutingTable {
 
                     int jump = (int)Math.pow(2, depth - col - 1);
 
-                    y = RoutingProblem.conditionalJumpBy(y, jump, rt[y][col]);
+                    y = 0; //RoutingProblem.conditionalJumpBy(y, jump, rt[y][col]);
 
                     s += "-- (node-" + y + "-" + (col+1) +")";
 
@@ -26,7 +26,7 @@ public class TikzPathsFromRoutingTable {
 
                     int jump = (int)Math.pow(2, col - depth + 1);
 
-                    y = RoutingProblem.conditionalJumpBy(y, jump, rt[y][col]);
+                    y = 0;// RoutingProblem.conditionalJumpBy(y, jump, rt[y][col]);
 
                     s += "-- (node-" + y + "-" + (col+1) +")";
 

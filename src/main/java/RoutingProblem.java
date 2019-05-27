@@ -2,15 +2,17 @@ public class RoutingProblem {
 
     int depth;
 
-    int[] p;
+    int[] p = new int[0];
     int[] q;
 
     RoutingProblem(int depth, int[] p, int[] q) {
-
         this.depth = depth;
-
         this.p = p;
         this.q = q;
+    }
+
+    public String toString() {
+        return "depth="+depth+", p.length="+p.length;
     }
 
     boolean valuesAreDistinct (int[] p) {
@@ -85,7 +87,6 @@ public class RoutingProblem {
     int conditionalJumpBy (int x, int jump, boolean doIt) {
 
         if (!doIt) {
-
             return x;
         }
 
@@ -100,13 +101,18 @@ public class RoutingProblem {
     // a router that is a (2^d) x (2 * d - 1)
     // boolean table.
 
-    boolean[][] benesRouting (RoutingProblem rp) {
+    static boolean[][] benesRouting (RoutingProblem rp ) {
+        return rp.benesRouting();
+    }
 
-        int card = (int) Math.pow(2, rp.depth);
+    boolean[][] benesRouting () {
 
-        boolean[][] RoutingTable = new boolean[card][2*rp.depth-1];     // résultat final
 
-        for (int round = 1; round < depth; round++) {   // this loop populates all the columns EXCEPT the central one
+        int card = (int) Math.pow(2, depth);
+
+        boolean[][] RoutingTable = new boolean[card][2*depth-1];     // résultat final
+
+        for (int round = 1; round < this.depth; round++) {   // this loop populates all the columns EXCEPT the central one
 
             boolean[] visited = new boolean[card];      // every round has a new visited boolean table
 
