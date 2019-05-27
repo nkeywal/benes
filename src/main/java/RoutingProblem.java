@@ -61,15 +61,13 @@ public class RoutingProblem {
             int y = pC.getAt(x);
             int xJump = jumpBy(x, currentJump);
             int yJump = jumpBy(y, currentJump);
+            int z = qC.getAt(yJump);
 
             boolean xIsAbove = isAbove(x, currentJump);
             boolean yIsAbove = isAbove(y, currentJump);
-
-            boolean yVert = xVert ^ xIsAbove ^ yIsAbove;
-
-            int z = qC.getAt(yJump);
             boolean zIsAbove = isAbove(z, currentJump);
 
+            boolean yVert = xVert ^ xIsAbove ^ yIsAbove;
             boolean zVert = zIsAbove ^ (!yIsAbove) ^ yVert;
 
             res.routingTable[x][round - 1] = xVert;
@@ -79,13 +77,13 @@ public class RoutingProblem {
 
             int xP = conditionalJumpBy(x, currentJump, xVert);
             int xV = conditionalJumpBy(y, currentJump, yVert);
-            pN[xP] = xV;
-
             int zP = conditionalJumpBy(z, currentJump, zVert);
             int yJV = conditionalJumpBy(yJump, currentJump, yVert);
-            pN[zP] = yJV;
 
+            pN[xP] = xV;
             qN[xV] = xP;
+
+            pN[zP] = yJV;
             qN[yJV] = zP;
 
             visited[x] = true;

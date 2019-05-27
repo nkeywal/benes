@@ -13,7 +13,7 @@ public class Main {
 
         System.out.println(s);
         System.out.println((s.isOk() ? " Well done!" : "Problem!"));
-        
+
         // TikzPathsFromRoutingTable.printTikzPaths(route);
     }
 }
