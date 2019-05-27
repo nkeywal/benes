@@ -1,23 +1,16 @@
-
-
 public class Main {
 
     public static void main(String[] args) {
-        int[] p = {3,2,0,1};
-        int[] q = {2,3,0,1};
+        int[] p = {2, 3, 1, 0};
 
-        int depth = 2;
+        RoutingProblem rp = new RoutingProblem(p);
 
-        RoutingProblem rp = new RoutingProblem(depth, p, q);
+        // System.out.print(rp);
 
-        System.out.print(rp);
-
-        boolean[][] solution = new boolean[4][3];
-
-        //solution = rp.benesRouting();
+        boolean[][] solution = rp.benesRouting();
 
 
-        // System.out.println(routing);
+        System.out.println(RoutingProblem.printSolution(solution));
 
         // boolean[][] route = {{false, true, true}, {false, true, true}, {false, false, true}, {false, false, true}};
 
