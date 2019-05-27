@@ -1,16 +1,20 @@
 public class Main {
 
     public static void main(String[] args) {
-        int[] p = {2, 3, 1, 0};
+        Permutation p = new Permutation(2);
+        p.shuffle();
+
+        p = new Permutation(new int[]{2, 3, 0, 1});
+        System.out.println(p);
 
         RoutingProblem rp = new RoutingProblem(p);
 
-        // System.out.print(rp);
+        Solution s = rp.benesRouting();
 
-        boolean[][] solution = rp.benesRouting();
+        System.out.println(s);
+        System.out.println((s.isOk() ? " Well done!" : "Problem!"));
 
-
-        System.out.println(RoutingProblem.printSolution(solution));
+        s.printRes();
 
         // boolean[][] route = {{false, true, true}, {false, true, true}, {false, false, true}, {false, false, true}};
 
