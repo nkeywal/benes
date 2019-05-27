@@ -1,10 +1,10 @@
 public class Main {
 
     public static void main(String[] args) {
-        Permutation p = new Permutation(2);
+        Permutation p = new Permutation(256);
         p.shuffle();
 
-        p = new Permutation(new int[]{2, 3, 0, 1});
+        //p = new Permutation(new int[]{1, 3, 0, 2});
         System.out.println(p);
 
         RoutingProblem rp = new RoutingProblem(p);
@@ -13,11 +13,7 @@ public class Main {
 
         System.out.println(s);
         System.out.println((s.isOk() ? " Well done!" : "Problem!"));
-
-        s.printRes();
-
-        // boolean[][] route = {{false, true, true}, {false, true, true}, {false, false, true}, {false, false, true}};
-
+        
         // TikzPathsFromRoutingTable.printTikzPaths(route);
     }
 }

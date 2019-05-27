@@ -96,6 +96,9 @@ public class Permutation implements Cloneable {
     return new Permutation(inverse);
   }
 
+  boolean isInvert(Permutation inv) {
+    return equals(inv.invert());
+  }
 
   public String toString() {
     return Arrays.toString(values);

@@ -76,7 +76,7 @@ public class Solution {
         cur = new Permutation(next);
       }
 
-      return cur.equals(p);
+      return cur.invert() .equals(p);
   }
 
 }

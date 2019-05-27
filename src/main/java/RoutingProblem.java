@@ -12,6 +12,10 @@ public class RoutingProblem {
     depth = MoreMath.log2(p.length);
     this.p = new Permutation(p);
     q = this.p.invert();
+
+    if (!this.p.isInvert(q)) {
+      throw new IllegalStateException();
+    }
   }
 
   RoutingProblem(Permutation p) {
@@ -24,9 +28,9 @@ public class RoutingProblem {
     return width * quot + ((pos + jump) % width);
   }
 
-  static boolean isAbove(int x, int jump) {
+  static boolean isAbove(int pos, int jump) {
     int width = 2 * jump;
-    return ((x % width) >= jump);
+    return ((pos % width) >= jump);
   }
 
   static int conditionalJumpBy(int pos, int jump, boolean doIt) {
@@ -39,18 +43,22 @@ public class RoutingProblem {
   Solution benesRouting() {
     Solution res = new Solution(this, new boolean[card][2 * depth - 1]);
 
-    for (int round = 1; round
-      < this.depth; round++) {   // this loop populates all the columns EXCEPT the central one
+    Permutation pC = p;
+    Permutation qC = q;
+
+    for (int round = 1; round   < this.depth; round++) {   // this loop populates all the columns EXCEPT the central one
       boolean[] visited = new boolean[card];      // every round has a new visited boolean table
+
+      int[] pN = new int[card];
+      int[] qN = new int[card];
 
       int currentJump = (int) Math.pow(2, depth - round);
       for (int i = 0; i < card; i++) {
         if (!visited[i]) {
           int x = i;
-          boolean xVert =
-            false;      // this could be started randomly; we choose a horizontal start.
+          boolean xVert = false;      // this could be started randomly; we choose a horizontal start.
           while (!visited[x]) {
-            int y = p.getAt(x);
+            int y = pC.getAt(x);
             int xJump = jumpBy(x, currentJump);
             int yJump = jumpBy(y, currentJump);
 
@@ -59,7 +67,7 @@ public class RoutingProblem {
 
             boolean yVert = xVert ^ xIsAbove ^ yIsAbove;
 
-            int z = q.getAt(yJump);
+            int z = qC.getAt(yJump);
             boolean zIsAbove = isAbove(z, currentJump);
 
             boolean zVert = zIsAbove ^ (!yIsAbove) ^ yVert;
@@ -69,23 +77,16 @@ public class RoutingProblem {
             res.routingTable[y][2 * depth - round - 1] = yVert;
             res.routingTable[yJump][2 * depth - round - 1] = yVert;
 
-            // updating p at x and z
-            p.setAs(conditionalJumpBy(x, currentJump, xVert),
-              conditionalJumpBy(y, currentJump, yVert));
-            p.setAs(conditionalJumpBy(z, currentJump, zVert),
-              conditionalJumpBy(yJump, currentJump, yVert));
-            if (!p.isPermutation()) {
-              throw new IllegalStateException();
-            }
+            int xP = conditionalJumpBy(x, currentJump, xVert);
+            int xV = conditionalJumpBy(y, currentJump, yVert);
+            pN[xP] = xV;
 
-            // updating q at y and yJump
-            q.setAs(conditionalJumpBy(y, currentJump, yVert),
-              conditionalJumpBy(x, currentJump, xVert));
-            q.setAs(conditionalJumpBy(yJump, currentJump, yVert),
-              conditionalJumpBy(z, currentJump, zVert));
-            if (!q.isPermutation()) {
-              throw new IllegalStateException();
-            }
+            int zP = conditionalJumpBy(z, currentJump, zVert);
+            int yJV = conditionalJumpBy(yJump, currentJump, yVert);
+            pN[zP] = yJV;
+
+            qN[xV] = xP;
+            qN[yJV] = zP;
 
             visited[x] = true;
             visited[z] = true;
@@ -95,11 +96,14 @@ public class RoutingProblem {
           }
         }
       }
+
+      pC = new Permutation(pN);
+      qC = new Permutation(qN);
     }
 
     // the central row : switch or not
     for (int i = 0; i < card; i++) {
-      res.routingTable[i][depth - 1] = (p.getAt(i) == i);
+      res.routingTable[i][depth - 1] = (pC.getAt(i) != i);//q.getAt(i));
     }
 
     return res;
