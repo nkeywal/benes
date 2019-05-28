@@ -1,9 +1,12 @@
 import java.util.Arrays;
-import java.util.Collections;
 
 public class Permutation implements Cloneable {
-  int[] values;
+  private int[] values;
 
+
+  public int getLength(){
+    return values.length;
+  }
 
   public Permutation clone() {
     return new Permutation(Arrays.copyOf(values, values.length));
@@ -11,16 +14,6 @@ public class Permutation implements Cloneable {
 
   int getAt(int pos) {
     return values[pos];
-  }
-
-  void setAs(int pos, int val) {
-    values[pos] = val;
-  }
-
-  void swap(int p1, int p2) {
-    int tmp = values[p1];
-    values[p1] = values[p2];
-    values[p2] = tmp;
   }
 
   static boolean valuesAreDistinct(int[] values) {
@@ -48,11 +41,6 @@ public class Permutation implements Cloneable {
   static boolean isPermutation(int[] values) {
     return valuesAreDistinct(values) && valuesAreInRange(values);
   }
-
-  boolean isPermutation() {
-    return valuesAreDistinct(values) && valuesAreInRange(values);
-  }
-
 
   Permutation(int[] values) {
     if (!isPermutation(values)) {

@@ -1,25 +1,21 @@
 public class RoutingProblem {
   final int depth;
-  final int card;
+  private final int card;
   final Permutation p;
-  final Permutation q;
+  private final Permutation q;
 
-  RoutingProblem(int[] p) {
-    if (p == null || p.length <= 1 || Integer.bitCount(p.length) != 1) {
-      throw new IllegalArgumentException("bad length for p: " + p.length);
+  RoutingProblem(Permutation p) {
+    if (p == null || p.getLength() <= 1 || Integer.bitCount(p.getLength()) != 1) {
+      throw new IllegalArgumentException("bad length for p");
     }
-    card = p.length;
-    depth = MoreMath.log2(p.length);
-    this.p = new Permutation(p);
+    card = p.getLength();
+    depth = MoreMath.log2(p.getLength());
+    this.p = p;
     q = this.p.invert();
 
     if (!this.p.isInvert(q)) {
       throw new IllegalStateException();
     }
-  }
-
-  RoutingProblem(Permutation p) {
-    this(p.values);
   }
 
   static int jumpBy(int pos, int jump) {
@@ -46,7 +42,7 @@ public class RoutingProblem {
     Permutation pC = p;
     Permutation qC = q;
 
-    for (int round = 1; round   < this.depth; round++) {   // this loop populates all the columns EXCEPT the central one
+    for (int round = 1; round < this.depth; round++) {   // this loop populates all the columns EXCEPT the central one
       boolean[] visited = new boolean[card];      // every round has a new visited boolean table
 
       int[] pN = new int[card];
@@ -54,44 +50,42 @@ public class RoutingProblem {
 
       int currentJump = (int) Math.pow(2, depth - round);
       for (int i = 0; i < card; i++) {
-        if (!visited[i]) {
-          int x = i;
-          boolean xVert = false;      // this could be started randomly; we choose a horizontal start.
-          while (!visited[x]) {
-            int y = pC.getAt(x);
-            int xJump = jumpBy(x, currentJump);
-            int yJump = jumpBy(y, currentJump);
-            int z = qC.getAt(yJump);
+        int x = i;
+        boolean xVert = false;      // this could be started randomly; we choose a horizontal start.
+        while (!visited[x]) {
+          int y = pC.getAt(x);
+          int xJump = jumpBy(x, currentJump);
+          int yJump = jumpBy(y, currentJump);
+          int z = qC.getAt(yJump);
 
-            boolean xIsAbove = isAbove(x, currentJump);
-            boolean yIsAbove = isAbove(y, currentJump);
-            boolean zIsAbove = isAbove(z, currentJump);
+          boolean xIsAbove = isAbove(x, currentJump);
+          boolean yIsAbove = isAbove(y, currentJump);
+          boolean zIsAbove = isAbove(z, currentJump);
 
-            boolean yVert = xVert ^ xIsAbove ^ yIsAbove;
-            boolean zVert = zIsAbove ^ (!yIsAbove) ^ yVert;
+          boolean yVert = xVert ^ xIsAbove ^ yIsAbove;
+          boolean zVert = zIsAbove ^ (!yIsAbove) ^ yVert;
 
-            res.routingTable[x][round - 1] = xVert;
-            res.routingTable[xJump][round - 1] = xVert;
-            res.routingTable[y][2 * depth - round - 1] = yVert;
-            res.routingTable[yJump][2 * depth - round - 1] = yVert;
+          res.routingTable[x][round - 1] = xVert;
+          res.routingTable[xJump][round - 1] = xVert;
+          res.routingTable[y][2 * depth - round - 1] = yVert;
+          res.routingTable[yJump][2 * depth - round - 1] = yVert;
 
-            int xP = conditionalJumpBy(x, currentJump, xVert);
-            int xV = conditionalJumpBy(y, currentJump, yVert);
-            int zP = conditionalJumpBy(z, currentJump, zVert);
-            int yJV = conditionalJumpBy(yJump, currentJump, yVert);
+          int xP = conditionalJumpBy(x, currentJump, xVert);
+          int xV = conditionalJumpBy(y, currentJump, yVert);
+          int zP = conditionalJumpBy(z, currentJump, zVert);
+          int yJV = conditionalJumpBy(yJump, currentJump, yVert);
 
-            pN[xP] = xV;
-            qN[xV] = xP;
+          pN[xP] = xV;
+          qN[xV] = xP;
 
-            pN[zP] = yJV;
-            qN[yJV] = zP;
+          pN[zP] = yJV;
+          qN[yJV] = zP;
 
-            visited[x] = true;
-            visited[z] = true;
+          visited[x] = true;
+          visited[z] = true;
 
-            x = jumpBy(z, currentJump);
-            xVert = zVert;
-          }
+          x = jumpBy(z, currentJump);
+          xVert = zVert;
         }
       }
 
