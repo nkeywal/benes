@@ -1,7 +1,7 @@
 public class Main {
 
     public static void main(String[] args) {
-        Permutation p = new Permutation(256);
+        Permutation p = new Permutation(128);
         p.shuffle();
 
         //p = new Permutation(new int[]{1, 3, 0, 2});

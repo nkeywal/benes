@@ -48,15 +48,14 @@ public class RoutingProblem {
       int[] pN = new int[card];
       int[] qN = new int[card];
 
-      int currentJump = (int) Math.pow(2, depth - round);
+      final int currentJump = (int) Math.pow(2, depth - round);
       for (int i = 0; i < card; i++) {
-        int x = i;
         boolean xVert = false;      // this could be started randomly; we choose a horizontal start.
-        while (!visited[x]) {
+        for (int z, x=i; !visited[x]; x = jumpBy(z, currentJump) ) {
           int y = pC.getAt(x);
           int xJump = jumpBy(x, currentJump);
           int yJump = jumpBy(y, currentJump);
-          int z = qC.getAt(yJump);
+          z = qC.getAt(yJump);
 
           boolean xIsAbove = isAbove(x, currentJump);
           boolean yIsAbove = isAbove(y, currentJump);
@@ -65,10 +64,8 @@ public class RoutingProblem {
           boolean yVert = xVert ^ xIsAbove ^ yIsAbove;
           boolean zVert = zIsAbove ^ (!yIsAbove) ^ yVert;
 
-          res.routingTable[x][round - 1] = xVert;
-          res.routingTable[xJump][round - 1] = xVert;
-          res.routingTable[y][2 * depth - round - 1] = yVert;
-          res.routingTable[yJump][2 * depth - round - 1] = yVert;
+          res.setRoutingTable(round - 1, x, xJump, xVert);
+          res.setRoutingTable(2 * depth - round - 1, y, yJump, yVert);
 
           int xP = conditionalJumpBy(x, currentJump, xVert);
           int xV = conditionalJumpBy(y, currentJump, yVert);
@@ -84,7 +81,6 @@ public class RoutingProblem {
           visited[x] = true;
           visited[z] = true;
 
-          x = jumpBy(z, currentJump);
           xVert = zVert;
         }
       }

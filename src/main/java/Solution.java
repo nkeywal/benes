@@ -79,4 +79,8 @@ public class Solution {
       return cur.invert() .equals(rp.p);
   }
 
+  public void setRoutingTable(int r, int p1, int p2, boolean v) {
+    routingTable[p1][r] = v;
+    routingTable[p2][r] = v;
+  }
 }
